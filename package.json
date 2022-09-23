@@ -2,14 +2,18 @@
   "name": "angular-mfe-poc",
   "version": "0.0.0",
   "scripts": {
+    "start:shell": "ng serve shell -o --ssl",
+    "start:remote-1": "ng serve remote-1 -o --ssl",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "run:all": "node node_modules/@angular-architects/module-federation/src/server/mf-dev-server.js"
   },
   "private": true,
   "dependencies": {
+    "@angular-architects/module-federation": "^14.3.10",
     "@angular/animations": "~13.3.0",
     "@angular/common": "~13.3.0",
     "@angular/compiler": "~13.3.0",
@@ -23,7 +27,8 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular/cli": "~13.3.7",
+    "@angular-devkit/build-angular": "~13.3.9",
+    "@angular/cli": "~13.3.9",
     "@angular/compiler-cli": "~13.3.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
@@ -33,6 +38,7 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "ngx-build-plus": "^13.0.0",
     "typescript": "~4.6.2"
   }
 }
