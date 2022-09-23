@@ -1,27 +1,76 @@
-# AngularMfePoc
+# Angular Mfe Poc
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.7.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `npm run start:shell` for shell application. Navigate to `http://localhost:4200/`.
 
-## Code scaffolding
+Run `npm run start:remote-1` for remote-1 application. Navigate to `http://localhost:4201/`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The applications will automatically reload if you change any of the source files.
 
-## Build
+> To run local, all application must be running at same time as remoteEntry.js is served dynamically on dev environment.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Adding new mfe application
 
-## Running unit tests
+Generate a new remote application.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```ng generate application <application-name>```
 
-## Running end-to-end tests
+Configure a new remote application.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```ng add @angular-architects/module-federation --project <application-name> --port <port-not-used-yet> --type remote```
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Configuring new mfe application
+
+### At remote application
+
+At new's application `webpack.config.js`, defines the `name` and exposed module at `exposes`.
+
+```
+// webpack.config.js (remote)
+exposes: {
+  "./DepartmentsModule":
+    "./projects/remote-1/src/app/modules/departments/departments.module.ts",
+},
+```
+
+### At shell application
+
+At shell's application `webpack.config.js`, defines the `remotes` and its path (remoteEntry).
+
+```
+// webpack.config.js (shell)
+remotes: {
+  remote1: "https://localhost:4201/remoteEntry.js",
+},
+```
+
+> Important: verify if the remoteEntry.js path is correct (if ssl is set should use https).
+
+### Adding routes to mfe
+
+The remote's module is loaded using `loadRemoteModule` provided from `@angular-architects/module-federation` where should be set the chosen remote application and a known module.
+
+```
+// app-routing.module.ts (shell)
+const routes: Routes = [
+  {
+    path: 'departments',
+    loadChildren: () =>
+      loadRemoteModule({
+        type: 'module',
+        remoteEntry: 'https://localhost:4201/remoteEntry.js',
+        exposedModule: './DepartmentsModule',
+      }).then((m) => m.DepartmentsModule),
+  },
+]
+```
+
+### Running applications
+
+```
+ng serve <application-name> -o --ssl
+```
