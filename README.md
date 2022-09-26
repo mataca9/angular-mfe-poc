@@ -37,7 +37,7 @@ exposes: {
 },
 ```
 
-### At shell application
+### At shell application (static loading)
 
 At shell's application `webpack.config.js`, defines the `remotes` and its path (remoteEntry).
 
@@ -50,7 +50,9 @@ remotes: {
 
 > Important: verify if the remoteEntry.js path is correct (if ssl is set should use https).
 
-### Adding routes to mfe
+### Adding routes to mfe (dynamic loading)
+
+When using dynamic loading, you don't need to declare the remotes inside shell's `webpack.config.js`
 
 The remote's module is loaded using `loadRemoteModule` provided from `@angular-architects/module-federation` where should be set the chosen remote application and a known module.
 
